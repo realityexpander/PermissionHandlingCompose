@@ -2,6 +2,7 @@ package com.plcoding.permissionhandlingcompose
 
 import android.Manifest
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Arrangement
@@ -22,6 +23,10 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import com.plcoding.permissionhandlingcompose.ui.theme.PermissionHandlingComposeTheme
 
+const val TAG = "MainActivity"
+
+var i = 0
+
 @ExperimentalPermissionsApi
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -39,8 +44,9 @@ class MainActivity : ComponentActivity() {
                 DisposableEffect(
                     key1 = lifecycleOwner,
                     effect = {
-                        val observer = LifecycleEventObserver { _, event ->
+                        val observer = LifecycleEventObserver { lc, event ->
                             if(event == Lifecycle.Event.ON_START) {
+                                Log.d(TAG, "lc=${lc}")
                                 permissionsState.launchMultiplePermissionRequest()
                             }
                         }
@@ -56,6 +62,8 @@ class MainActivity : ComponentActivity() {
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center
                 ) {
+                    Log.d(TAG, "i= ${i++}")
+
                     permissionsState.permissions.forEach { perm ->
                         when(perm.permission) {
                             Manifest.permission.CAMERA -> {
